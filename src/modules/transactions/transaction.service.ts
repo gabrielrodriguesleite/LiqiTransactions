@@ -139,7 +139,16 @@ export class TransactionService {
     console.log(`[Service] Searching DynamoDB for status of transaction ID: ${id}`);
 
     try {
-
+      const getCommand = new GetCommand({
+        TableName: tableName,
+        Key: { id: id },
+        ProjectionExpression: '#s', // pede apenas o atributo 'status'
+        ExpressionAttributeNames: { '#s': 'status' } // mapeia '#s' para 'status' (evita palavras reservadas)
+      })
+      const response = await ddbDocClient.send(getCommand)
+      if (response.Item) {
+        return { status: response.Item.status as TransactionStatus }
+      }
       return null;
 
     } catch (error) {
