@@ -1,0 +1,13 @@
+{
+  "name": "financial-transactions-system",
+  "version": "1.0.0",
+  "description": "a transaction api system for backend tech exam",
+  "main": "dist/server.ts",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node dist/server.js"
+  },
+  "devDependencies": {},
+  "peerDependencies": {},
+  "dependencies": {}
+}
