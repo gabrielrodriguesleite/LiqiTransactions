@@ -39,7 +39,44 @@ const transactionController = new TransactionController();
  *              $ref: '#/components/schemas/ErrorResponse'
  */
 router.post('/', transactionController.createTransaction);
+
 router.get('/', transactionController.getTransactionsByPeriod);
+
+/**
+ * @openapi
+ * /transactions/{id}:
+ *  get:
+ *    tags:
+ *    - Transactions
+ *    description: Retorna os detalhes completos de uma única transação financeira pelo seu ID único.
+ *    parameters:
+ *    - in: path
+ *      name: id
+ *      schema:
+ *        type: string
+ *        format: uuid
+ *        required: true
+ *        description: O ID único da transação a ser consultada.
+ *    responses:
+ *      '200':
+ *        description: Detalhes da transação encontrada.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Transaction'
+ *      '404':
+ *        description: Transação com o ID especificado não encontrada.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorResponse'
+ *      '500':
+ *        description: Erro interno do servidor ao consultar a transação.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorResponse'
+ */
 router.get('/:id', transactionController.getTransactionById);
 router.get('/:id/status', transactionController.getTransactionStatus);
 
