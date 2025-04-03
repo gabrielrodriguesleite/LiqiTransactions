@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   app:
-    container_name: liqitransactions_app
+    container_name: financial-app-dev
     build:
       context: .
       dockerfile: Dockerfile
@@ -11,6 +11,55 @@ services:
       - "3000:3000"
     volumes:
       - ./src:/app/src
+    env_file:
+      - .env
+    depends_on:
+      - dynamodb-local
+      - elasticmq
+    networks:
+      - financial-network
+
+  dynamodb-local:
+    container_name: dynamodb-local
+    image: amazon/dynamodb-local:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - dynamodata:/home/dynamodblocal/data
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data "
+    networks:
+      - financial-network
+
+  elasticmq:
+    container_name: elasticmq
+    image: softwaremill/elasticmq:latest
+    ports:
+      - "9324:9324" # Porta da API SQS
+      - "9325:9325" # Porta da UI web (opcional)
+    volumes:
+      - ./elasticmq.conf:/opt/elasticmq.conf
+    networks:
+      - financial-network
+
+  consumer:
+    container_name: financial-consumer
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/app/src
+    env_file:
+      - .env
+    command: npm run start:consumer
+    depends_on:
+      - elasticmq
+      - app
+    networks:
+      - financial-network
+    restart: unless-stopped
+
+volumes:
+  dynamodata:
 
 networks:
   financial-network:
