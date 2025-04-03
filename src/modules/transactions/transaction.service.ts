@@ -90,10 +90,43 @@ export class TransactionService {
 
   async findTransactionsByPeriod(startDate?: Date, endDate?: Date): Promise<Transaction[]> {
     console.log(`[Service] Querying DynamoDB using GSI 'TimestampIndex' between ${startDate} and ${endDate}.`)
+    let keyCondition = '#pk = :pkValue';
+    const attibuteNames: Record<string, string> = { '#pk': 'gsi1pk' };
+    const attributeValues: Record<string, any> = { ':pkValue': 'TRANSACTION' }
 
+    if (startDate && endDate) {
+      keyCondition += ' AND #ts BETWEEN :startTs AND :endTs';
+      attibuteNames['#ts'] = 'timestamp';
+      attributeValues[':startTs'] = startDate.toISOString()
+      attributeValues[':endDate'] = endDate.toISOString()
+    } else if (startDate) {
+      keyCondition += ' AND #ts >= :startTs'
+      attibuteNames['#ts'] = 'timestamp';
+      attributeValues[':startTs'] = startDate.toISOString()
+    } else if (endDate) {
+      keyCondition += ' AND #ts <= :endTs';
+      attibuteNames['#ts'] = 'timestamp';
+      attributeValues[':endTs'] = endDate.toISOString()
+    }
 
     try {
-      const transations = [] as Transaction[]
+      const queryCommand = new QueryCommand({
+        TableName: tableName,
+        IndexName: 'TimestampIndex', // GSI a ser usado 
+        KeyConditionExpression: keyCondition,
+        ExpressionAttributeNames: attibuteNames,
+        ExpressionAttributeValues: attributeValues,
+        ScanIndexForward: false // mais recente para o mais antigo
+      })
+      const response = await ddbDocClient.send(queryCommand)
+      const items = (response.Items || []) as any[]
+      const transations: Transaction[] = items.map(item => {
+        if (item.timestamp && typeof item.timestamp === 'string') {
+          item.timestamp = new Date(item.timestamp)
+        }
+        delete item.gsi1pk
+        return item as Transaction
+      })
       return transations;
 
     } catch (error) {
