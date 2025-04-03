@@ -7,13 +7,18 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "start": "node dist/server.js",
-    "dev": "ts-node-dev src/server.ts --respawn --transpile-only --ignore-watch node_modules --no-notify"
+    "dev": "ts-node-dev src/server.ts --respawn --transpile-only --ignore-watch node_modules --no-notify",
+    "test": "jest --runInBand",
+    "test:watch": "jest --watchAll --runInBand",
+    "test:cov": "jest --coverage --runInBand"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.14.0",
     "@types/supertest": "^6.0.3",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "jest": "^29.7.0",
     "rimraf": "^6.0.1",
     "supertest": "^7.1.0",
@@ -22,7 +27,12 @@
   },
   "peerDependencies": {},
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.782.0",
+    "@aws-sdk/client-sqs": "^3.782.0",
+    "@aws-sdk/lib-dynamodb": "^3.782.0",
     "dotenv": "^16.4.7",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }
