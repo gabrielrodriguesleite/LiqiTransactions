@@ -23,3 +23,7 @@ docker-compose up
 ### API docs json
 
 <http://localhost:3000/api-docs.json>
+
+### ElasticMQ web UI
+
+<http://localhost:9325/>
