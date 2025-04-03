@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
 import path from "path";
 import swaggerJSDoc from "swagger-jsdoc";
+import transactionRoutes from "./modules/transactions/transaction.routes";
 
 dotenv.config()
 
@@ -75,6 +76,8 @@ app.get('/api-docs.json', function (req, res) {
 app.get('/api/v1/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'UP', timestamp: new Date().toISOString() })
 })
+
+app.use('/api/v1/transactions', transactionRoutes)
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error('Unhandled Error: ', err.stack)
