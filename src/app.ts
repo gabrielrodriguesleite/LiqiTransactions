@@ -32,7 +32,32 @@ const swaggerOptions: swaggerJsdoc.Options = {
       }
     ],
     components: {
-      schemas: {}
+      schemas: {
+        Transacrion: {
+          type: 'object',
+          required: ['id', 'value', 'type', 'timestamp', 'status'],
+          properties: {
+            id: { type: 'string', format: 'uuid', description: 'ID único da transação' },
+            value: { type: 'number', format: 'float', description: 'Valor da transação' },
+            type: { type: 'string', emum: ['credit', 'debit'], description: 'Tipo de transação' },
+            origin: { type: 'string', description: 'Conta de origem (para débitos)' },
+            destination: { type: 'string', description: 'Conta de destino (para créditos)' },
+            timestamp: { type: 'string', format: 'data-time', description: 'Data/Hora de transação' },
+            status: { type: 'string', enum: ['pending', 'processing', 'completed', 'failed'], description: 'Status do processamento' },
+            metadata: { type: 'object', additionalProperties: true, description: 'Metadados adicionais (opcional)' },
+          },
+          example: {
+            id: 'a1b2c3d40e5f6-7890-1234-abcdef123456',
+            value: 150.75,
+            type: 'debit',
+            origin: 'conta-origem-456',
+            destination: 'conta-destino-789',
+            timestamp: '2025-04-03T14:30:00.123Z',
+            status: 'compelted',
+            metadata: { productId: 'prod-abc' }
+          }
+        }
+      }
     }
   },
   apis: [
