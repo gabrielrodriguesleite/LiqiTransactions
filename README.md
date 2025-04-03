@@ -47,57 +47,6 @@ A arquitetura segue um padrão orientado a eventos:
 8. O **Consumidor** remove a mensagem da Fila.
 9. Consultas (`GET`) na **API REST** leem diretamente do **DynamoDB**.
 
-```mermaid
-sequenceDiagram
-    participant Client
-    participant API (Express)
-    participant DynamoDB
-    participant Queue (SQS/ElasticMQ)
-    participant Consumer
-
-    rect rgb(240, 248, 255)
-    note right of Client: Fluxo de Criação (POST)
-    Client->>+API (Express): POST /transactions (body)
-    API (Express)->>+DynamoDB: PutItem (status=PENDING)
-    DynamoDB-->>-API (Express): OK
-    API (Express)->>+Queue (SQS/ElasticMQ): SendMessage (dados da Tx)
-    Queue (SQS/ElasticMQ)-->>-API (Express): OK (MessageId)
-    API (Express)-->>-Client: 201 Created (Tx com status PENDING)
-    end
-
-    rect rgb(255, 250, 240)
-    note right of Queue (SQS/ElasticMQ): Fluxo de Processamento (Assíncrono)
-    loop Poll/Processamento
-        Consumer->>+Queue (SQS/ElasticMQ): ReceiveMessage
-        alt Mensagem Recebida
-            Queue (SQS/ElasticMQ)-->>-Consumer: Mensagem(Tx) + ReceiptHandle
-            Consumer->>+DynamoDB: UpdateItem (status=PROCESSING)
-            DynamoDB-->>-Consumer: OK
-            Note right of Consumer: Validação / Lógica de Negócio
-            alt Processamento OK
-                Consumer->>+DynamoDB: UpdateItem (status=COMPLETED)
-                DynamoDB-->>-Consumer: OK
-            else Processamento Falhou
-                Consumer->>+DynamoDB: UpdateItem (status=FAILED)
-                DynamoDB-->>-Consumer: OK
-            end
-            Consumer->>+Queue (SQS/ElasticMQ): DeleteMessage (ReceiptHandle)
-            Queue (SQS/ElasticMQ)-->>-Consumer: OK
-        else Sem Mensagens
-            Queue (SQS/ElasticMQ)-->>-Consumer: Resposta Vazia
-        end
-    end
-    end
-
-    rect rgb(230, 230, 250)
-    note right of Client: Fluxo de Consulta (GET)
-    Client->>+API (Express): GET /transactions/{id} OU /transactions?params
-    API (Express)->>+DynamoDB: GetItem(id) OU Query(GSI)
-    DynamoDB-->>-API (Express): Dados da(s) Tx(s) / Não Encontrado
-    API (Express)-->>-Client: 200 OK (Dados) / 404 Not Found
-    end
-```
-
 ## 5. Pré-requisitos
 
 - Docker: [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
@@ -276,3 +225,4 @@ sequenceDiagram
 - Melhorar tratamento de erros (middleware centralizado).
 - Refatorar para usar Injeção de Dependência.
 - Preparar para deploy na AWS (ex: usando AWS SAM).
+- Diagrama
