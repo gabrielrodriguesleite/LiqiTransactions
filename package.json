@@ -5,7 +5,9 @@
   "main": "dist/server.ts",
   "type": "commonjs",
   "scripts": {
-    "start": "node dist/server.js"
+    "build": "rimraf dist && tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev src/server.ts --respawn --transpile-only --ignore-watch node_modules --no-notify"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
