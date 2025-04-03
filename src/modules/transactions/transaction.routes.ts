@@ -124,6 +124,41 @@ router.get('/', transactionController.getTransactionsByPeriod);
  */
 router.get('/:id', transactionController.getTransactionById);
 
+/**
+ * @openapi
+ * /transactions/{id}/status:
+ *   get:
+ *     tags:
+ *     - Transactions
+ *     description: Retorna apenas o status atual ('pending', 'processing', 'completed', 'failed') de uma transação específica pelo seu ID.
+ *     parameters:
+ *     - in: path
+ *       name: id
+ *       schema:
+ *         type: string
+ *         format: uuid
+ *         required: true
+ *         description: O ID único da transação para consultar o status.
+ *     responses:
+ *       '200':
+ *         description: Status atual da transação.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TransactionStatusResponse' # Schema específico para status
+ *       '404':
+ *         description: Transação com o ID especificado não encontrada.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '500':
+ *         description: Erro interno do servidor ao consultar o status.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 router.get('/:id/status', transactionController.getTransactionStatus);
 
 export default router;
