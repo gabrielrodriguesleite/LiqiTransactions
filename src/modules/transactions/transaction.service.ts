@@ -68,6 +68,18 @@ export class TransactionService {
   async findTransactionById(id: string): Promise<Transaction | null> {
     console.log(`[Service] Searching for transaction by ID: ${id}`);
     try {
+      const getCommand = new GetCommand({
+        TableName: tableName,
+        Key: { id: id },
+      });
+      const response = await ddbDocClient.send(getCommand);
+      if (response.Item) {
+        const item = response.Item;
+        if (item.timestamp && typeof item.timestamp === 'string') {
+          item.timestamp = new Date(item.timestamp)
+        }
+        return item as Transaction;
+      }
       return null;
 
     } catch (error) {
