@@ -160,6 +160,17 @@ export class TransactionService {
   async updateTransactionStatus(id: string, status: TransactionStatus): Promise<boolean> {
     console.log(`[Service] Updating status for transaction ${id} to ${status} in DynamoDB.`)
     try {
+      const updateCommand = new UpdateCommand({
+        TableName: tableName,
+        Key: { id: id },
+        UpdateExpression: 'SET #s = :newStatus', // define o atributo 'status'
+        ExpressionAttributeNames: { '#s': 'status' },
+        ExpressionAttributeValues: { ':newStatus': status },
+        ConditionExpression: 'attibute_exists(id)',
+        ReturnValues: 'NONE',
+      })
+      await ddbDocClient.send(updateCommand);
+      console.log(`[Service] Successfully updated status for transaction ${id} to ${status}.`)
       return true
 
     } catch (error) {
