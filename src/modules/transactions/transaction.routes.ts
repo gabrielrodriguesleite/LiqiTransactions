@@ -40,6 +40,51 @@ const transactionController = new TransactionController();
  */
 router.post('/', transactionController.createTransaction);
 
+/**
+ * @openapi
+ * /transactions:
+ *  get:
+ *    tags:
+ *    - Transactions
+ *    summary: Consulta transações por período.
+ *    description: Retorna uma lista de transações filtradas por data de início e/ou fim. A consulta por período pode ser ineficiente sem índices adequados no banco de dados (GSI recomendado).
+ *    parameters:
+ *    - in: query
+ *      name: startDate
+ *      schema:
+ *        type: string
+ *        format: date # Ou date-time se aceitar hora
+ *        required: false
+ *      description: Data de início (inclusive) para filtrar transações (Formato YYYY-MM-DD ou ISO 8601).
+ *    - in: query
+ *      name: endDate
+ *      schema:
+ *        type: string
+ *        format: date # Ou date-time
+ *      required: false
+ *      description: Data de fim (inclusive) para filtrar transações (Formato YYYY-MM-DD ou ISO 8601).
+ *    responses:
+ *      '200':
+ *      description: Lista de transações encontradas no período.
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: array
+ *            items:
+ *              $ref: '#/components/schemas/Transaction'
+ *      '400':
+ *        description: Formato inválido para startDate ou endDate.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorResponse'
+ *      '500':
+ *        description: Erro interno do servidor ao consultar transações.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/ErrorResponse'
+ */
 router.get('/', transactionController.getTransactionsByPeriod);
 
 /**
@@ -78,6 +123,7 @@ router.get('/', transactionController.getTransactionsByPeriod);
  *              $ref: '#/components/schemas/ErrorResponse'
  */
 router.get('/:id', transactionController.getTransactionById);
+
 router.get('/:id/status', transactionController.getTransactionStatus);
 
 export default router;
