@@ -140,9 +140,9 @@ flowchart LR
      ```
 
    - Isso iniciará:
-     - O serviço da API (`app`) na porta definida (ex: 3000).
+     - O serviço da API (`app`) na porta definida (ex: 3000). <http://localhost:3000/api/v1/health>
      - O serviço DynamoDB Local (`dynamodb-local`) na porta 8000.
-     - O serviço ElasticMQ (`elasticmq`) na porta 9324 (API) e 9325 (UI Web).
+     - O serviço ElasticMQ (`elasticmq`) na porta 9324 (API) e 9325 (UI Web). <http://localhost:9325>
 
 2. **Setup Inicial do Banco de Dados:**
 
