@@ -33,7 +33,7 @@ const swaggerOptions: swaggerJsdoc.Options = {
     ],
     components: {
       schemas: {
-        Transacrion: {
+        Transaction: {
           type: 'object',
           required: ['id', 'value', 'type', 'timestamp', 'status'],
           properties: {
@@ -56,12 +56,50 @@ const swaggerOptions: swaggerJsdoc.Options = {
             status: 'compelted',
             metadata: { productId: 'prod-abc' }
           }
+        },
+        CreateTransaction: {
+          type: 'object',
+          required: ['value', 'type'],
+          properties: {
+            value: { type: 'number', format: 'float', minimum: 0.01, description: 'Valor da transação (deve ser positivo)' },
+            type: { type: 'string', enum: ['credit', 'debit'], description: 'Tipo da transação' },
+            origin: { type: 'string', description: 'Conta de origem (obrigatório para débitos)' },
+            destination: { type: 'string', description: 'Conta de destino (obrigatório para créditos)' },
+            metadata: { type: 'object', additionalProperties: true, description: 'Metadados adicionais (opcional)' }
+          },
+          example: {
+            value: 55.00,
+            type: 'credit',
+            destination: 'acc-xyz-987'
+          }
+        },
+        TransactionStatusResponse: {
+          type: 'object',
+          required: ['status'],
+          properties: {
+            status: { type: 'string', enum: ['pending', 'processing', 'completed', 'failed'], description: 'Status atual do processamento' },
+          },
+          example: {
+            status: 'processing'
+          }
+        },
+        ErrorResponse: {
+          type: 'object',
+          properties: {
+            message: { type: 'string', description: 'Mensagem descrevendo o erro' }
+          },
+          example: {
+            message: 'Transaction not found'
+          }
         }
       }
     }
   },
   apis: [
     path.join(__dirname, './app.ts'),
+    path.join(__dirname, './modules/transactions/*.routes.ts'),
+    path.join(__dirname, './modules/transactions/*.dto.ts'),
+    path.join(__dirname, './modules/transactions/*.interface.ts'),
   ]
 }
 
