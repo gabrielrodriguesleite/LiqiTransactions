@@ -33,7 +33,7 @@ const swaggerOptions: swaggerJsdoc.Options = {
     ],
     components: {
       schemas: {
-        Transacrion: {
+        Transaction: {
           type: 'object',
           required: ['id', 'value', 'type', 'timestamp', 'status'],
           properties: {

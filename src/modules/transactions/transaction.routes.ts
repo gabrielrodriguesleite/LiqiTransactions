@@ -13,18 +13,18 @@ const transactionController = new TransactionController();
  *    summary: Cria uma nova transação financeira.
  *    description: Recebe os detalhes de uma nova transação, a salva com status 'pending' e a enfileira para processamento assíncrono.
  *    requestBody:
- *    required: true
- *    content:
- *      application/json:
- *      schema:
- *        $ref: '#/components/schemas/CreateTransaction' # Referencia o schema definido em app.ts
- *    responses:
- *      '201':
- *      description: Transação recebida e enfileirada com sucesso. Retorna a transação criada com status 'pending'.
+ *      required: true
  *      content:
  *        application/json:
  *          schema:
- *            $ref: '#/components/schemas/Transaction' # Referencia o schema Transaction
+ *            $ref: '#/components/schemas/CreateTransaction' # Referencia o schema definido em app.ts
+ *    responses:
+ *      '201':
+ *        description: Transação recebida e enfileirada com sucesso. Retorna a transação criada com status 'pending'.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Transaction' # Referencia o schema Transaction
  *      '400':
  *        description: Erro de validação nos dados de entrada.
  *        content:
@@ -100,8 +100,8 @@ router.get('/', transactionController.getTransactionsByPeriod);
  *      schema:
  *        type: string
  *        format: uuid
- *        required: true
- *        description: O ID único da transação a ser consultada.
+ *      required: true
+ *      description: O ID único da transação a ser consultada.
  *    responses:
  *      '200':
  *        description: Detalhes da transação encontrada.
@@ -137,8 +137,8 @@ router.get('/:id', transactionController.getTransactionById);
  *       schema:
  *         type: string
  *         format: uuid
- *         required: true
- *         description: O ID único da transação para consultar o status.
+ *       required: true
+ *       description: O ID único da transação para consultar o status.
  *     responses:
  *       '200':
  *         description: Status atual da transação.
