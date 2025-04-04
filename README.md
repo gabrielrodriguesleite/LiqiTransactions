@@ -138,6 +138,59 @@ A arquitetura segue um padrão orientado a eventos:
 
      _(Se a tabela ou índice já existirem, esses comandos darão erro, o que é normal)._
 
+   - **Outra forma é utilizando o container app**:
+
+      Em um novo terminal inicie o `sh` dentro do container app e instale o `aws-cli`
+
+      ```bash
+      docker-compose run app sh
+      apk add aws-cli
+      ```
+
+      Execute este comando no terminal para criar a tabela no dynamoDB:
+
+      ```bash
+      aws dynamodb create-table \
+      --table-name Transactions \
+      --attribute-definitions \
+          AttributeName=id,AttributeType=S \
+      --key-schema \
+          AttributeName=id,KeyType=HASH \
+      --provisioned-throughput \
+          ReadCapacityUnits=5,WriteCapacityUnits=5 \
+      --endpoint-url http://dynamodb-local:8000
+      ```
+
+      Execute este comando no terminal para atualizar a tabela no dynamoDB:
+
+      ```bash 
+      aws dynamodb update-table \
+      --table-name Transactions \
+      --attribute-definitions \
+          AttributeName=gsi1pk,AttributeType=S \
+          AttributeName=timestamp,AttributeType=S \
+      --global-secondary-index-updates \
+          "[
+              {
+                  \"Create\": {
+                      \"IndexName\": \"TimestampIndex\",
+                      \"KeySchema\": [
+                          {\"AttributeName\": \"gsi1pk\", \"KeyType\": \"HASH\"},
+                          {\"AttributeName\": \"timestamp\", \"KeyType\": \"RANGE\"}
+                      ],
+                      \"Projection\": {
+                          \"ProjectionType\": \"ALL\"
+                      },
+                      \"ProvisionedThroughput\": {
+                          \"ReadCapacityUnits\": 5,
+                          \"WriteCapacityUnits\": 5
+                      }
+                  }
+              }
+          ]" \
+      --endpoint-url http://dynamodb-local:8000
+      ```
+
 3. **Executar o Consumidor SQS:**
    O consumidor inicia automaticamente por estar definido no `docker-compose` então não precisa ser iniciado manualmente.
    Entretando é possível iniciá-lo manualmente:
@@ -193,29 +246,30 @@ A arquitetura segue um padrão orientado a eventos:
 ## 10. Estrutura do Projeto (Visão Geral)
 
 ```
-├── Dockerfile          # Define a imagem Docker da aplicação
-├── docker-compose.yml  # Orquestra os containers (app, db, queue)
-├── elasticmq.conf      # Configuração da fila local (ElasticMQ)
-├── package.json        # Dependências e scripts Node.js
-├── tsconfig.json       # Configuração do TypeScript
-├── jest.config.js      # Configuração do Jest
-├── .env.example        # Exemplo de variáveis de ambiente
-├── .env                # Variáveis de ambiente locais (não versionado)
-├── src/                # Código fonte da aplicação
-│   ├── app.ts            # Configuração principal do Express, Swagger, middlewares
-│   ├── server.ts         # Inicialização do servidor HTTP
-│   ├── consumer.ts       # Lógica do consumidor da fila SQS
-│   ├── config/           # Configurações (clientes SQS, DynamoDB)
-│   ├── modules/          # Módulos de negócio (ex: transactions)
-│   │   └── transactions/ # Módulo de Transações
+├── Dockerfile                  # Define a imagem Docker da aplicação
+├── docker-compose.yml          # Orquestra os containers (app, db, queue)
+├── elasticmq.conf              # Configuração da fila local (ElasticMQ)
+├── package.json                # Dependências e scripts Node.js
+├── tsconfig.json               # Configuração do TypeScript
+├── jest.config.js              # Configuração do Jest
+├── .env.example                # Exemplo de variáveis de ambiente
+├── .env                        # Variáveis de ambiente locais (não versionado)
+├── assets/                     # Contém arquivos utilizados na documentação
+├── src/                        # Código fonte da aplicação
+│   ├── app.ts                  # Configuração principal do Express, Swagger, middlewares
+│   ├── server.ts               # Inicialização do servidor HTTP
+│   ├── consumer.ts             # Lógica do consumidor da fila SQS
+│   ├── config/                 # Configurações (clientes SQS, DynamoDB)
+│   ├── modules/                # Módulos de negócio (ex: transactions)
+│   │   └── transactions/       # Módulo de Transações
 │   │       ├── *.routes.ts     # Definição das rotas Express
 │   │       ├── *.controller.ts # Controladores (lógica HTTP)
 │   │       ├── *.service.ts    # Lógica de negócio, interação com DB/Fila
 │   │       ├── *.dto.ts        # Data Transfer Objects (corpos de requisição/resposta)
 │   │       └── *.interface.ts  # Interfaces TypeScript (modelo de dados)
-│   ├── tests/            # Arquivos e configurações de teste
-├── dist/               # Código JavaScript compilado (gerado pelo build)
-└── README.md           # Este arquivo
+│   ├── tests/                  # Arquivos e configurações de teste
+├── dist/                       # Código JavaScript compilado (gerado pelo build)
+└── README.md                   # Este arquivo
 ```
 
 ## 11. TODO / Próximos Passos
