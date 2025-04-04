@@ -152,7 +152,9 @@ A arquitetura segue um padrão orientado a eventos:
 
 ## 8. Usando a API
 
-- **Documentação Interativa (Swagger UI):** Acesse `http://localhost:3000/api-docs` no seu navegador.
+- **Documentação Interativa (Swagger UI):**
+  - Acesse <http://localhost:3000/api-docs> no seu navegador.
+  - Ou veja um print da [documentação interativa.](./assets/Swagger-UI-real.png)
 - **Endpoints Principais:**
   - `POST /api/v1/transactions` (Body: `{ "value": 10.5, "type": "credit", "destination": "conta-1" }`)
   - `GET /api/v1/transactions/<transaction_id>`
