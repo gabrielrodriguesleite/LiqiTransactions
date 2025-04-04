@@ -166,7 +166,7 @@ export class TransactionService {
         UpdateExpression: 'SET #s = :newStatus', // define o atributo 'status'
         ExpressionAttributeNames: { '#s': 'status' },
         ExpressionAttributeValues: { ':newStatus': status },
-        ConditionExpression: 'attibute_exists(id)',
+        ConditionExpression: 'attribute_exists(id)',
         ReturnValues: 'NONE',
       })
       await ddbDocClient.send(updateCommand);

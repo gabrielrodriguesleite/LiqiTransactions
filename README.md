@@ -47,6 +47,40 @@ A arquitetura segue um padrão orientado a eventos:
 8. O **Consumidor** remove a mensagem da Fila.
 9. Consultas (`GET`) na **API REST** leem diretamente do **DynamoDB**.
 
+```mermaid
+flowchart LR
+    subgraph Client Side
+        A[Client / User]
+    end
+
+    subgraph API Layer
+        B[API REST Service <br/> Node.js <br/> Express <br/> Docker]
+    end
+
+    subgraph Messaging
+        C[Message Queue <br/> AWS SQS <br/> Docker]
+    end
+
+    subgraph Consumer
+        D[Consumer Service <br/> Node.js <br/> Docker]
+    end
+
+    subgraph Database
+        E[NoSQL Database <br/> AWS DynamoDB <br/> Docker]
+    end
+
+    %% Request Flow
+    A -->|POST /transactions| B
+    B -->|Write 'PENDING'| E
+    B -->|Send message| C
+    C -->|Deliver message| D
+    D -->|Update status to 'PROCESSING'| E
+    D -->|Update status to 'COMPLETED'/'FAILED'| E
+    D -->|Delete message| C
+    A -->|GET /transactions| B
+    B -->|Read status| E
+```
+
 ## 5. Pré-requisitos
 
 - Docker: [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
@@ -75,7 +109,7 @@ A arquitetura segue um padrão orientado a eventos:
 
 2. **Variáveis de Ambiente:**
 
-   - Copie o arquivo de exemplo `.env.example` para um novo arquivo chamado `.env`.
+   - Copie o arquivo de exemplo `env_example` para um novo arquivo chamado `.env`.
 
      ```bash
      cp env_example .env
@@ -106,9 +140,9 @@ A arquitetura segue um padrão orientado a eventos:
      ```
 
    - Isso iniciará:
-     - O serviço da API (`app`) na porta definida (ex: 3000).
+     - O serviço da API (`app`) na porta definida (ex: 3000). <http://localhost:3000/api/v1/health>
      - O serviço DynamoDB Local (`dynamodb-local`) na porta 8000.
-     - O serviço ElasticMQ (`elasticmq`) na porta 9324 (API) e 9325 (UI Web).
+     - O serviço ElasticMQ (`elasticmq`) na porta 9324 (API) e 9325 (UI Web). <http://localhost:9325>
 
 2. **Setup Inicial do Banco de Dados:**
 
@@ -255,7 +289,7 @@ A arquitetura segue um padrão orientado a eventos:
 ├── package.json                # Dependências e scripts Node.js
 ├── tsconfig.json               # Configuração do TypeScript
 ├── jest.config.js              # Configuração do Jest
-├── .env.example                # Exemplo de variáveis de ambiente
+├── env_example                 # Exemplo de variáveis de ambiente
 ├── .env                        # Variáveis de ambiente locais (não versionado)
 ├── assets/                     # Contém arquivos utilizados na documentação
 ├── src/                        # Código fonte da aplicação
@@ -284,4 +318,3 @@ A arquitetura segue um padrão orientado a eventos:
 - Melhorar tratamento de erros (middleware centralizado).
 - Refatorar para usar Injeção de Dependência.
 - Preparar para deploy na AWS (ex: usando AWS SAM).
-- Diagrama
