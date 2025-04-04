@@ -78,7 +78,7 @@ A arquitetura segue um padrão orientado a eventos:
    - Copie o arquivo de exemplo `.env.example` para um novo arquivo chamado `.env`.
 
      ```bash
-     cp .env.example .env
+     cp env_example .env
      ```
 
    - Revise as variáveis no `.env`. Os valores padrão devem funcionar para o ambiente Docker Compose local.
@@ -242,6 +242,9 @@ A arquitetura segue um padrão orientado a eventos:
   # Ou para modo watch
   docker-compose exec app npm run test:watch
   ```
+
+  ![Test preview](./assets/jest-result.png)
+  
 
 ## 10. Estrutura do Projeto (Visão Geral)
 
