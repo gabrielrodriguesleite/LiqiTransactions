@@ -54,7 +54,7 @@ router.post('/', transactionController.createTransaction);
  *      schema:
  *        type: string
  *        format: date # Ou date-time se aceitar hora
- *        required: false
+ *      required: false
  *      description: Data de início (inclusive) para filtrar transações (Formato YYYY-MM-DD ou ISO 8601).
  *    - in: query
  *      name: endDate
@@ -65,13 +65,13 @@ router.post('/', transactionController.createTransaction);
  *      description: Data de fim (inclusive) para filtrar transações (Formato YYYY-MM-DD ou ISO 8601).
  *    responses:
  *      '200':
- *      description: Lista de transações encontradas no período.
- *      content:
- *        application/json:
- *          schema:
- *            type: array
- *            items:
- *              $ref: '#/components/schemas/Transaction'
+ *        description: Lista de transações encontradas no período.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                $ref: '#/components/schemas/Transaction'
  *      '400':
  *        description: Formato inválido para startDate ou endDate.
  *        content:
