@@ -318,4 +318,3 @@ flowchart LR
 - Melhorar tratamento de erros (middleware centralizado).
 - Refatorar para usar Injeção de Dependência.
 - Preparar para deploy na AWS (ex: usando AWS SAM).
-- Diagrama
