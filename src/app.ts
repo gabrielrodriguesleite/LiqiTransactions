@@ -97,6 +97,9 @@ const swaggerOptions: swaggerJsdoc.Options = {
   },
   apis: [
     path.join(__dirname, './app.ts'),
+    path.join(__dirname, './modules/transactions/*.routes.ts'),
+    path.join(__dirname, './modules/transactions/*.dto.ts'),
+    path.join(__dirname, './modules/transactions/*.interface.ts'),
   ]
 }
 
