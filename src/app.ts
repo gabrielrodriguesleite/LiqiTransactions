@@ -72,6 +72,25 @@ const swaggerOptions: swaggerJsdoc.Options = {
             type: 'credit',
             destination: 'acc-xyz-987'
           }
+        },
+        TransactionStatusResponse: {
+          type: 'object',
+          required: ['status'],
+          properties: {
+            status: { type: 'string', enum: ['pending', 'processing', 'completed', 'failed'], description: 'Status atual do processamento' },
+          },
+          example: {
+            status: 'processing'
+          }
+        },
+        ErrorResponse: {
+          type: 'object',
+          properties: {
+            message: { type: 'string', description: 'Mensagem descrevendo o erro' }
+          },
+          example: {
+            message: 'Transaction not found'
+          }
         }
       }
     }
