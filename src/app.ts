@@ -56,6 +56,22 @@ const swaggerOptions: swaggerJsdoc.Options = {
             status: 'compelted',
             metadata: { productId: 'prod-abc' }
           }
+        },
+        CreateTransaction: {
+          type: 'object',
+          required: ['value', 'type'],
+          properties: {
+            value: { type: 'number', format: 'float', minimum: 0.01, description: 'Valor da transação (deve ser positivo)' },
+            type: { type: 'string', enum: ['credit', 'debit'], description: 'Tipo da transação' },
+            origin: { type: 'string', description: 'Conta de origem (obrigatório para débitos)' },
+            destination: { type: 'string', description: 'Conta de destino (obrigatório para créditos)' },
+            metadata: { type: 'object', additionalProperties: true, description: 'Metadados adicionais (opcional)' }
+          },
+          example: {
+            value: 55.00,
+            type: 'credit',
+            destination: 'acc-xyz-987'
+          }
         }
       }
     }
